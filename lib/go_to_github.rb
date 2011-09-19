@@ -63,8 +63,6 @@ module Redcar
           path = Project::Manager.focussed_project.path
           file = document.path[path.size,document.path.size]
           branch = `cd #{path} && git branch --no-color 2> /dev/null`.match(/\*\ (.*)\n/)[1]
-          url = "https://github.com/" << project_name << "/" << type << "/" << branch << file << "#L" << current_line.to_s                    
-    
           remote = `cd #{path} && git config --get branch.#{branch}.remote`
           remote = 'origin' if remote.empty?
           project_name = `cd #{path} && git config --get remote.#{remote}.url`.match(/github.com[:|\/](.*)\.git\n/)[1]
@@ -72,6 +70,8 @@ module Redcar
           raise "Unable to determine current branch" unless branch
           raise "Unable to determine correct GitHub remote" unless remote
           raise "Unable to determine GitHub user/project names" unless project_name
+
+          url = "https://github.com/" << project_name << "/" << type << "/" << branch << file << "#LID" << current_line.to_s
 
           Thread.new do
             case Redcar.platform
